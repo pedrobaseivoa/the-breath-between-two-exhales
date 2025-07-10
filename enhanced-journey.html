@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Paths - Enhanced Surrealistic Journey</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: radial-gradient(ellipse at center, #0a0a15 0%, #000000 100%);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: none;
+            user-select: none;
+        }
+        #canvas {
+            position: absolute; top: 0; left: 0;
+            background: transparent;
+            filter: contrast(1.2) brightness(1.1) saturate(1.1);
+        }
+        #ui {
+            position: absolute; top: 20px; left: 20px;
+            color: #ffffff; font-size: 12px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            z-index: 100; opacity: 0.7;
+        }
+        #emotion-indicator {
+            position: absolute; top: 20px; right: 20px;
+            color: #ffffff; font-size: 11px; text-align: right;
+            opacity: 0.8; z-index: 100;
+        }
+        .instruction {
+            position: absolute; bottom: 30px; left: 50%;
+            transform: translateX(-50%); color: #cccccc;
+            font-size: 14px; text-align: center;
+            opacity: 0.6; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="ui">
+        <div>Reality Nodes: <span id="nodeCount">0</span></div>
+        <div>Quantum Links: <span id="edgeCount">0</span></div>
+        <div>Consciousness Depth: <span id="depth">0</span></div>
+        <div>Fractal Level: <span id="fractalLevel">1</span></div>
+    </div>
+
+    <div id="emotion-indicator">
+        <div>Existential Dread: <span id="anxiety">█░░░░</span></div>
+        <div>Lucid Awareness: <span id="clarity">░░█░░</span></div>
+        <div>Infinite Burden: <span id="infinity">████░</span></div>
+        <div>Hair Complexity: <span id="hairComplexity">░█░░░</span></div>
+    </div>
+
+    <div class="instruction">
+        Move to explore • Click to branch reality • Hold Shift for deep connections
+    </div>
+
+    <script>
+        class EnhancedSurrealisticJourney {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                
+                // Advanced graph structures
+                this.nodes = new Map();
+                this.edges = new Set();
+                this.currentNodeId = 0;
+                this.protagonist = null;
+                this.hairStrands = [];
+                this.particles = [];
+                this.fractals = [];
+                
+                // Enhanced emotional tracking
+                this.anxiety = 0.1;
+                this.clarity = 0.2;
+                this.infinity = 0.9;
+                this.hairComplexity = 0.1;
+                this.existentialWeight = 0;
+                
+                // Advanced visual parameters
+                this.time = 0;
+                this.mousePos = { x: 0, y: 0 };
+                this.fractalLevel = 1;
+                this.dreamIntensity = 0.5;
+                this.keys = {};
+                
+                this.initializeAdvancedGraph();
+                this.initializeProtagonist();
+                this.initializeParticleSystem();
+                this.bindEvents();
+                this.animate();
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            initializeAdvancedGraph() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                
+                // Create fractal-based initial structure
+                this.generateFractalNodes(centerX, centerY, 200, 0, 3);
+            }
+
+            generateFractalNodes(x, y, radius, depth, maxDepth) {
+                if (depth > maxDepth) return;
+                
+                const nodeId = this.addAdvancedNode(x, y, 'fractal', depth);
+                
+                if (depth === 0) {
+                    this.protagonist = { 
+                        x, y, currentNode: nodeId, targetNode: null, 
+                        progress: 0, speed: 0.015,
+                        consciousness: 1.0,
+                        memoryTrail: []
+                    };
+                }
+                
+                const branches = 3 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < branches; i++) {
+                    const angle = (i / branches) * Math.PI * 2 + Math.random() * 0.5;
+                    const newRadius = radius * (0.618 + Math.random() * 0.3); // Golden ratio variation
+                    const newX = x + Math.cos(angle) * newRadius;
+                    const newY = y + Math.sin(angle) * newRadius;
+                    
+                    const childId = this.generateFractalNodes(newX, newY, newRadius * 0.7, depth + 1, maxDepth);
+                    if (childId !== undefined) {
+                        this.addQuantumEdge(nodeId, childId, Math.random());
+                    }
+                }
+                
+                return nodeId;
+            }
+
+            addAdvancedNode(x, y, type = 'normal', depth = 0) {
+                const id = this.currentNodeId++;
+                this.nodes.set(id, {
+                    id, x, y, type, depth,
+                    probability: Math.random(),
+                    connections: new Set(),
+                    visited: false,
+                    energy: Math.random(),
+                    phase: Math.random() * Math.PI * 2,
+                    radius: 2 + Math.random() * 8,
+                    dreaminess: Math.random(),
+                    anxietyField: Math.random() * 0.1,
+                    memoryIntensity: 0
+                });
+                return id;
+            }
+
+            addQuantumEdge(nodeA, nodeB, strength = 1.0) {
+                const edge = `${Math.min(nodeA, nodeB)}-${Math.max(nodeA, nodeB)}`;
+                if (!this.edges.has(edge)) {
+                    this.edges.add(edge);
+                    this.nodes.get(nodeA).connections.add(nodeB);
+                    this.nodes.get(nodeB).connections.add(nodeA);
+                }
+            }
+
+            initializeParticleSystem() {
+                // Initialize hair strands with complex physics
+                for (let i = 0; i < 25; i++) {
+                    this.hairStrands.push({
+                        points: [],
+                        targetNodeId: null,
+                        energy: Math.random(),
+                        color: `hsla(${260 + Math.random() * 80}, 80%, ${40 + Math.random() * 40}%, 0.7)`,
+                        thickness: 0.5 + Math.random() * 4,
+                        consciousness: Math.random(),
+                        dreamPhase: Math.random() * Math.PI * 2,
+                        complexity: 1 + Math.random() * 3
+                    });
+                }
+
+                // Initialize floating particles
+                for (let i = 0; i < 100; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        life: Math.random(),
+                        maxLife: 0.5 + Math.random() * 2,
+                        size: Math.random() * 3,
+                        color: `hsla(${Math.random() * 360}, 60%, 70%, 0.3)`
+                    });
+                }
+            }
+
+            bindEvents() {
+                window.addEventListener('resize', () => this.resizeCanvas());
+                
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mousePos.x = e.clientX;
+                    this.mousePos.y = e.clientY;
+                });
+
+                this.canvas.addEventListener('click', (e) => {
+                    if (this.keys['Shift']) {
+                        this.createDeepConnection(e.clientX, e.clientY);
+                    } else {
+                        this.createRealityBranch(e.clientX, e.clientY);
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => this.keys[e.key] = true);
+                document.addEventListener('keyup', (e) => this.keys[e.key] = false);
+            }
+
+            createRealityBranch(x, y) {
+                const nearestNode = this.findNearestNode(this.protagonist.x, this.protagonist.y);
+                const baseNodeId = this.addAdvancedNode(x, y, 'reality-branch');
+                this.addQuantumEdge(nearestNode, baseNodeId);
+                
+                // Generate fractal sub-branches
+                this.generateFractalNodes(x, y, 80, 0, 2);
+                
+                this.anxiety = Math.min(1, this.anxiety + 0.15);
+                this.infinity = Math.min(1, this.infinity + 0.08);
+                this.existentialWeight += 0.1;
+            }
+
+            createDeepConnection(x, y) {
+                // Create connections to multiple distant nodes
+                const nodes = Array.from(this.nodes.values());
+                const sortedByDistance = nodes.sort((a, b) => {
+                    const distA = Math.hypot(a.x - x, a.y - y);
+                    const distB = Math.hypot(b.x - x, b.y - y);
+                    return distA - distB;
+                });
+
+                const connectionNodeId = this.addAdvancedNode(x, y, 'deep-connection');
+                
+                // Connect to 5 nearest nodes with quantum entanglement
+                for (let i = 0; i < Math.min(5, sortedByDistance.length); i++) {
+                    this.addQuantumEdge(connectionNodeId, sortedByDistance[i].id);
+                }
+
+                this.hairComplexity = Math.min(1, this.hairComplexity + 0.2);
+                this.fractalLevel = Math.min(10, this.fractalLevel + 1);
+            }
+
+            updateProtagonist() {
+                const targetNodeId = this.findNearestNode(this.mousePos.x, this.mousePos.y);
+                const targetNode = this.nodes.get(targetNodeId);
+                
+                if (this.protagonist.targetNode !== targetNodeId) {
+                    this.protagonist.targetNode = targetNodeId;
+                    this.protagonist.progress = 0;
+                }
+
+                if (this.protagonist.targetNode !== null) {
+                    this.protagonist.progress += this.protagonist.speed;
+                    
+                    if (this.protagonist.progress >= 1) {
+                        // Protagonist reaches new node
+                        this.protagonist.currentNode = this.protagonist.targetNode;
+                        this.protagonist.x = targetNode.x;
+                        this.protagonist.y = targetNode.y;
+                        this.protagonist.targetNode = null;
+                        this.protagonist.progress = 0;
+                        
+                        // Update consciousness and memory
+                        this.nodes.get(this.protagonist.currentNode).visited = true;
+                        this.nodes.get(this.protagonist.currentNode).memoryIntensity = 1.0;
+                        this.protagonist.memoryTrail.push(this.protagonist.currentNode);
+                        
+                        if (this.protagonist.memoryTrail.length > 20) {
+                            this.protagonist.memoryTrail.shift();
+                        }
+                        
+                        this.updateExistentialState();
+                    } else {
+                        // Smooth interpolation with consciousness effects
+                        const currentNode = this.nodes.get(this.protagonist.currentNode);
+                        const t = this.easeInOutCubic(this.protagonist.progress);
+                        this.protagonist.x = currentNode.x + (targetNode.x - currentNode.x) * t;
+                        this.protagonist.y = currentNode.y + (targetNode.y - currentNode.y) * t;
+                    }
+                }
+            }
+
+            easeInOutCubic(t) {
+                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            }
+
+            updateExistentialState() {
+                const visitedCount = Array.from(this.nodes.values()).filter(n => n.visited).length;
+                const totalNodes = this.nodes.size;
+                
+                // Complex emotional calculations
+                this.clarity = Math.min(0.9, visitedCount / totalNodes + 0.1 + Math.sin(this.time * 0.01) * 0.1);
+                
+                const unexploredPaths = Array.from(this.nodes.values())
+                    .filter(n => !n.visited)
+                    .reduce((sum, n) => sum + n.connections.size, 0);
+                
+                this.anxiety = Math.min(1, (unexploredPaths / (totalNodes * 3)) + this.existentialWeight * 0.3);
+                this.infinity = Math.min(1, (totalNodes / 100) + Math.sin(this.time * 0.005) * 0.1);
+                this.hairComplexity = Math.min(1, (visitedCount / 30) + (this.fractalLevel / 20));
+            }
+
+            updateAdvancedHairStrands() {
+                this.hairStrands.forEach((strand, index) => {
+                    strand.points = [];
+                    
+                    // Complex hair physics with consciousness effects
+                    const consciousnessRadius = 150 + strand.consciousness * 200 + Math.sin(this.time * 0.02 + index) * 80;
+                    
+                    const connectedNodes = Array.from(this.nodes.values())
+                        .filter(node => {
+                            const distance = Math.hypot(node.x - this.protagonist.x, node.y - this.protagonist.y);
+                            return distance < consciousnessRadius;
+                        })
+                        .sort((a, b) => {
+                            const distA = Math.hypot(a.x - this.protagonist.x, a.y - this.protagonist.y);
+                            const distB = Math.hypot(b.x - this.protagonist.x, b.y - this.protagonist.y);
+                            return distA - distB;
+                        });
+
+                    if (connectedNodes.length > index) {
+                        const targetNode = connectedNodes[index % connectedNodes.length];
+                        strand.targetNodeId = targetNode.id;
+                        
+                        // Generate complex curved paths
+                        const segments = Math.floor(12 + strand.complexity * 8);
+                        for (let i = 0; i <= segments; i++) {
+                            const t = i / segments;
+                            
+                            // Multiple sine waves for organic movement
+                            const wave1 = Math.sin(this.time * 0.03 + index + t * Math.PI * 2) * 25;
+                            const wave2 = Math.sin(this.time * 0.05 + index * 1.5 + t * Math.PI) * 15;
+                            const consciousnessWave = Math.sin(this.time * 0.02 + strand.dreamPhase + t * Math.PI) * 40 * strand.consciousness;
+                            
+                            const baseX = this.protagonist.x + (targetNode.x - this.protagonist.x) * t;
+                            const baseY = this.protagonist.y + (targetNode.y - this.protagonist.y) * t;
+                            
+                            const perpendicular = this.getPerpendicular(this.protagonist, targetNode);
+                            const totalOffset = wave1 + wave2 + consciousnessWave;
+                            
+                            strand.points.push({
+                                x: baseX + perpendicular.x * totalOffset,
+                                y: baseY + perpendicular.y * totalOffset
+                            });
+                        }
+                    }
+                });
+            }
+
+            getPerpendicular(pointA, pointB) {
+                const length = Math.hypot(pointB.x - pointA.x, pointB.y - pointA.y);
+                return {
+                    x: -(pointB.y - pointA.y) / length,
+                    y: (pointB.x - pointA.x) / length
+                };
+            }
+
+            updateParticles() {
+                this.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.life -= 0.01;
+                    
+                    // Particle attraction to protagonist
+                    const dx = this.protagonist.x - particle.x;
+                    const dy = this.protagonist.y - particle.y;
+                    const distance = Math.hypot(dx, dy);
+                    
+                    if (distance < 200) {
+                        particle.vx += (dx / distance) * 0.002;
+                        particle.vy += (dy / distance) * 0.002;
+                    }
+                    
+                    // Reset particles
+                    if (particle.life <= 0 || distance < 10) {
+                        particle.x = Math.random() * this.canvas.width;
+                        particle.y = Math.random() * this.canvas.height;
+                        particle.life = particle.maxLife;
+                        particle.vx = (Math.random() - 0.5) * 0.5;
+                        particle.vy = (Math.random() - 0.5) * 0.5;
+                    }
+                });
+            }
+
+            findNearestNode(x, y) {
+                let nearest = 0;
+                let minDistance = Infinity;
+                
+                for (const [id, node] of this.nodes) {
+                    const distance = Math.hypot(node.x - x, node.y - y);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearest = id;
+                    }
+                }
+                return nearest;
+            }
+
+            drawSurrealisticLandscape() {
+                this.ctx.save();
+                this.ctx.globalAlpha = 0.08;
+                
+                // Draw morphing geometric landscapes
+                for (const [id, node] of this.nodes) {
+                    const size = 40 + node.energy * 120 + node.memoryIntensity * 50;
+                    const sides = 3 + Math.floor(node.probability * 7);
+                    const morphing = Math.sin(this.time * 0.008 + node.phase) * 0.3;
+                    
+                    this.ctx.strokeStyle = node.visited 
+                        ? `hsla(200, 60%, 50%, ${0.3 + morphing})`
+                        : `hsla(300, 40%, 40%, ${0.2 + morphing})`;
+                    this.ctx.lineWidth = 1 + node.memoryIntensity * 2;
+                    
+                    this.ctx.beginPath();
+                    for (let i = 0; i <= sides; i++) {
+                        const angle = (i / sides) * Math.PI * 2 + node.phase + this.time * 0.01;
+                        const radius = size * (1 + morphing);
+                        const x = node.x + Math.cos(angle) * radius;
+                        const y = node.y + Math.sin(angle) * radius;
+                        
+                        if (i === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+                    }
+                    this.ctx.stroke();
+                }
+                this.ctx.restore();
+            }
+
+            drawAdvancedGraph() {
+                // Draw quantum edges with pulsing energy
+                this.ctx.lineWidth = 1;
+                
+                for (const edge of this.edges) {
+                    const [nodeAId, nodeBId] = edge.split('-').map(Number);
+                    const nodeA = this.nodes.get(nodeAId);
+                    const nodeB = this.nodes.get(nodeBId);
+                    
+                    if (nodeA && nodeB) {
+                        const pulse = Math.sin(this.time * 0.05 + nodeA.phase + nodeB.phase) * 0.5 + 0.5;
+                        const alpha = 0.2 + pulse * 0.3;
+                        this.ctx.strokeStyle = `rgba(120, 160, 220, ${alpha})`;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(nodeA.x, nodeA.y);
+                        this.ctx.lineTo(nodeB.x, nodeB.y);
+                        this.ctx.stroke();
+                    }
+                }
+
+                // Draw consciousness nodes
+                for (const [id, node] of this.nodes) {
+                    const pulse = 1 + Math.sin(this.time * 0.06 + node.phase) * 0.4;
+                    const memoryGlow = node.memoryIntensity * 2;
+                    
+                    // Node glow
+                    if (node.visited) {
+                        const gradient = this.ctx.createRadialGradient(
+                            node.x, node.y, 0,
+                            node.x, node.y, node.radius * pulse + memoryGlow
+                        );
+                        gradient.addColorStop(0, `hsla(200, 80%, 70%, ${0.8 * pulse})`);
+                        gradient.addColorStop(1, 'rgba(100, 150, 200, 0)');
+                        
+                        this.ctx.fillStyle = gradient;
+                        this.ctx.beginPath();
+                        this.ctx.arc(node.x, node.y, (node.radius + memoryGlow) * pulse, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                    
+                    // Core node
+                    this.ctx.fillStyle = node.visited 
+                        ? `hsla(200, 70%, 60%, ${0.9 * pulse})`
+                        : `hsla(300, 60%, 50%, ${0.6 * pulse})`;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, node.radius * pulse, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Special rendering for different node types
+                    if (node.type === 'reality-branch') {
+                        this.ctx.strokeStyle = 'rgba(255, 200, 100, 0.8)';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.stroke();
+                    } else if (node.type === 'deep-connection') {
+                        this.ctx.strokeStyle = 'rgba(255, 100, 255, 0.9)';
+                        this.ctx.lineWidth = 3;
+                        this.ctx.stroke();
+                    }
+                }
+            }
+
+            drawEtherealProtagonist() {
+                this.ctx.save();
+                
+                // Complex multi-layered glow effect
+                const baseGlow = 20 + Math.sin(this.time * 0.1) * 8;
+                const consciousnessGlow = baseGlow + this.protagonist.consciousness * 15;
+                
+                // Outer consciousness field
+                const outerGradient = this.ctx.createRadialGradient(
+                    this.protagonist.x, this.protagonist.y, 0,
+                    this.protagonist.x, this.protagonist.y, consciousnessGlow
+                );
+                outerGradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                outerGradient.addColorStop(0.5, 'rgba(200, 220, 255, 0.4)');
+                outerGradient.addColorStop(1, 'rgba(100, 120, 200, 0)');
+                
+                this.ctx.fillStyle = outerGradient;
+                this.ctx.beginPath();
+                this.ctx.arc(this.protagonist.x, this.protagonist.y, consciousnessGlow, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Inner core with existential weight
+                const coreSize = 5 + this.existentialWeight * 3;
+                this.ctx.fillStyle = `rgba(255, 255, 255, ${0.95 - this.anxiety * 0.3})`;
+                this.ctx.beginPath();
+                this.ctx.arc(this.protagonist.x, this.protagonist.y, coreSize, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                this.ctx.restore();
+            }
+
+            drawComplexHairStrands() {
+                this.hairStrands.forEach((strand, index) => {
+                    if (strand.points.length < 2) return;
+                    
+                    // Dynamic color based on consciousness
+                    const hue = 260 + strand.consciousness * 60 + Math.sin(this.time * 0.02 + index) * 20;
+                    const saturation = 70 + strand.consciousness * 30;
+                    const lightness = 40 + strand.consciousness * 40;
+                    const alpha = 0.6 + Math.sin(this.time * 0.03 + strand.dreamPhase) * 0.3;
+                    
+                    this.ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+                    this.ctx.lineWidth = strand.thickness * (1 + this.hairComplexity);
+                    this.ctx.lineCap = 'round';
+                    this.ctx.lineJoin = 'round';
+                    
+                    // Draw hair strand with gradient effect
+                    for (let i = 0; i < strand.points.length - 1; i++) {
+                        const gradient = this.ctx.createLinearGradient(
+                            strand.points[i].x, strand.points[i].y,
+                            strand.points[i + 1].x, strand.points[i + 1].y
+                        );
+                        gradient.addColorStop(0, this.ctx.strokeStyle);
+                        gradient.addColorStop(1, `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha * 0.5})`);
+                        
+                        this.ctx.strokeStyle = gradient;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(strand.points[i].x, strand.points[i].y);
+                        this.ctx.lineTo(strand.points[i + 1].x, strand.points[i + 1].y);
+                        this.ctx.stroke();
+                    }
+                    
+                    // Consciousness sparkles at connection points
+                    if (strand.targetNodeId !== null) {
+                        const targetNode = this.nodes.get(strand.targetNodeId);
+                        if (targetNode) {
+                            const sparkle = Math.sin(this.time * 0.15 + strand.energy * 15) * 0.5 + 0.5;
+                            this.ctx.fillStyle = `rgba(255, 255, 255, ${sparkle})`;
+                            this.ctx.beginPath();
+                            this.ctx.arc(targetNode.x, targetNode.y, 3 + sparkle * 2, 0, Math.PI * 2);
+                            this.ctx.fill();
+                        }
+                    }
+                });
+            }
+
+            drawParticleSystem() {
+                this.particles.forEach(particle => {
+                    const alpha = particle.life / particle.maxLife;
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size * alpha, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+            }
+
+            updateUI() {
+                document.getElementById('nodeCount').textContent = this.nodes.size;
+                document.getElementById('edgeCount').textContent = this.edges.size;
+                document.getElementById('depth').textContent = Array.from(this.nodes.values()).filter(n => n.visited).length;
+                document.getElementById('fractalLevel').textContent = this.fractalLevel;
+                
+                // Update emotion indicators with complex visualization
+                const anxietyBars = '█'.repeat(Math.floor(this.anxiety * 5)) + '░'.repeat(5 - Math.floor(this.anxiety * 5));
+                const clarityBars = '█'.repeat(Math.floor(this.clarity * 5)) + '░'.repeat(5 - Math.floor(this.clarity * 5));
+                const infinityBars = '█'.repeat(Math.floor(this.infinity * 5)) + '░'.repeat(5 - Math.floor(this.infinity * 5));
+                const hairBars = '█'.repeat(Math.floor(this.hairComplexity * 5)) + '░'.repeat(5 - Math.floor(this.hairComplexity * 5));
+                
+                document.getElementById('anxiety').textContent = anxietyBars;
+                document.getElementById('clarity').textContent = clarityBars;
+                document.getElementById('infinity').textContent = infinityBars;
+                document.getElementById('hairComplexity').textContent = hairBars;
+            }
+
+            animate() {
+                this.time++;
+                
+                // Dynamic background fade based on emotional state
+                const fadeAlpha = 0.03 + this.anxiety * 0.02;
+                this.ctx.fillStyle = `rgba(10, 10, 21, ${fadeAlpha})`;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Update all systems
+                this.updateProtagonist();
+                this.updateAdvancedHairStrands();
+                this.updateParticles();
+                
+                // Render all layers in surrealistic order
+                this.drawSurrealisticLandscape();
+                this.drawParticleSystem();
+                this.drawAdvancedGraph();
+                this.drawComplexHairStrands();
+                this.drawEtherealProtagonist();
+                
+                // Update UI
+                this.updateUI();
+                
+                // Continue the infinite journey
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Begin the surrealistic journey
+        window.addEventListener('DOMContentLoaded', () => {
+            new EnhancedSurrealisticJourney();
+        });
+    </script>
+</body>
+</html>

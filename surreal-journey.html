@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Paths - A Surrealistic Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0a0a15 0%, #000000 100%);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: none;
+            user-select: none;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: transparent;
+            filter: contrast(1.1) brightness(1.05);
+        }
+
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ffffff;
+            font-size: 12px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            z-index: 100;
+            opacity: 0.7;
+        }
+
+        #title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            animation: fadeIn 3s ease-in-out 1s forwards;
+            z-index: 200;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .instruction {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #cccccc;
+            font-size: 14px;
+            text-align: center;
+            opacity: 0.6;
+            z-index: 100;
+        }
+
+        #emotion-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ffffff;
+            font-size: 11px;
+            text-align: right;
+            opacity: 0.8;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="title">
+        <div>∞ INFINITE PATHS ∞</div>
+        <div style="font-size: 14px; margin-top: 10px; opacity: 0.7;">A journey through possibility space</div>
+    </div>
+    
+    <div id="ui">
+        <div>Nodes: <span id="nodeCount">0</span></div>
+        <div>Connections: <span id="edgeCount">0</span></div>
+        <div>Depth: <span id="depth">0</span></div>
+    </div>
+
+    <div id="emotion-indicator">
+        <div>Anxiety: <span id="anxiety">█░░░░</span></div>
+        <div>Clarity: <span id="clarity">░░█░░</span></div>
+        <div>Infinity: <span id="infinity">████░</span></div>
+    </div>
+
+    <div class="instruction">
+        Move your mouse to guide her journey • Click to create new possibility branches
+    </div>
+
+    <script>
+        class SurrealisticJourney {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                
+                // Graph theory structures
+                this.nodes = new Map();
+                this.edges = new Set();
+                this.currentNodeId = 0;
+                this.protagonist = null;
+                this.hairStrands = [];
+                
+                // Emotional state tracking
+                this.anxiety = 0;
+                this.clarity = 0.3;
+                this.infinity = 0.8;
+                
+                // Visual parameters
+                this.time = 0;
+                this.mousePos = { x: 0, y: 0 };
+                this.targetPos = { x: 0, y: 0 };
+                
+                // Procedural generation
+                this.noiseOffset = 0;
+                this.landscapePoints = [];
+                
+                this.initializeGraph();
+                this.initializeProtagonist();
+                this.bindEvents();
+                this.animate();
+                
+                // Hide title after delay
+                setTimeout(() => {
+                    document.getElementById('title').style.opacity = '0';
+                    document.getElementById('title').style.transition = 'opacity 2s ease-out';
+                }, 4000);
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            initializeGraph() {
+                // Create initial nodes forming a base network
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                
+                // Starting node
+                this.addNode(centerX, centerY, 'origin');
+                
+                // Create initial branching structure
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2;
+                    const distance = 150 + Math.random() * 100;
+                    const x = centerX + Math.cos(angle) * distance;
+                    const y = centerY + Math.sin(angle) * distance;
+                    const nodeId = this.addNode(x, y, 'branch');
+                    this.addEdge(0, nodeId);
+                }
+            }
+
+            addNode(x, y, type = 'normal', probability = Math.random()) {
+                const id = this.currentNodeId++;
+                this.nodes.set(id, {
+                    id,
+                    x, y,
+                    type,
+                    probability,
+                    connections: new Set(),
+                    visited: false,
+                    energy: Math.random(),
+                    phase: Math.random() * Math.PI * 2,
+                    radius: 3 + Math.random() * 7
+                });
+                return id;
+            }
+
+            addEdge(nodeA, nodeB) {
+                const edge = `${Math.min(nodeA, nodeB)}-${Math.max(nodeA, nodeB)}`;
+                if (!this.edges.has(edge)) {
+                    this.edges.add(edge);
+                    this.nodes.get(nodeA).connections.add(nodeB);
+                    this.nodes.get(nodeB).connections.add(nodeA);
+                }
+            }
+
+            initializeProtagonist() {
+                const startNode = this.nodes.get(0);
+                this.protagonist = {
+                    x: startNode.x,
+                    y: startNode.y,
+                    currentNode: 0,
+                    targetNode: null,
+                    progress: 0,
+                    direction: 0,
+                    speed: 0.02
+                };
+
+                // Initialize hair strands
+                for (let i = 0; i < 20; i++) {
+                    this.hairStrands.push({
+                        points: [],
+                        targetNodeId: null,
+                        energy: Math.random(),
+                        color: `hsla(${270 + Math.random() * 60}, 70%, ${50 + Math.random() * 30}%, 0.8)`,
+                        thickness: 1 + Math.random() * 3
+                    });
+                }
+            }
+
+            bindEvents() {
+                window.addEventListener('resize', () => this.resizeCanvas());
+                
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mousePos.x = e.clientX;
+                    this.mousePos.y = e.clientY;
+                });
+
+                this.canvas.addEventListener('click', (e) => {
+                    this.createNewPossibilityBranch(e.clientX, e.clientY);
+                });
+            }
+
+            createNewPossibilityBranch(x, y) {
+                // Find nearest node to protagonist
+                const nearestNode = this.findNearestNode(this.protagonist.x, this.protagonist.y);
+                
+                // Create new node cluster
+                const baseNodeId = this.addNode(x, y, 'possibility');
+                this.addEdge(nearestNode, baseNodeId);
+                
+                // Create branching possibilities
+                for (let i = 0; i < 3 + Math.floor(Math.random() * 4); i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 50 + Math.random() * 80;
+                    const newX = x + Math.cos(angle) * distance;
+                    const newY = y + Math.sin(angle) * distance;
+                    const newNodeId = this.addNode(newX, newY, 'branch');
+                    this.addEdge(baseNodeId, newNodeId);
+                }
+                
+                // Increase anxiety from new possibilities
+                this.anxiety = Math.min(1, this.anxiety + 0.1);
+                this.infinity = Math.min(1, this.infinity + 0.05);
+            }
+
+            findNearestNode(x, y) {
+                let nearest = 0;
+                let minDistance = Infinity;
+                
+                for (const [id, node] of this.nodes) {
+                    const distance = Math.hypot(node.x - x, node.y - y);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearest = id;
+                    }
+                }
+                
+                return nearest;
+            }
+
+            updateProtagonist() {
+                // Move toward mouse position with graph constraints
+                const targetNodeId = this.findNearestNode(this.mousePos.x, this.mousePos.y);
+                const targetNode = this.nodes.get(targetNodeId);
+                
+                if (this.protagonist.targetNode !== targetNodeId) {
+                    this.protagonist.targetNode = targetNodeId;
+                    this.protagonist.progress = 0;
+                }
+
+                // Smooth movement toward target
+                if (this.protagonist.targetNode !== null) {
+                    this.protagonist.progress += this.protagonist.speed;
+                    
+                    if (this.protagonist.progress >= 1) {
+                        this.protagonist.currentNode = this.protagonist.targetNode;
+                        this.protagonist.x = targetNode.x;
+                        this.protagonist.y = targetNode.y;
+                        this.protagonist.targetNode = null;
+                        this.protagonist.progress = 0;
+                        
+                        // Mark node as visited
+                        this.nodes.get(this.protagonist.currentNode).visited = true;
+                        
+                        // Update emotional states based on exploration
+                        this.updateEmotionalState();
+                    } else {
+                        // Interpolate position
+                        const currentNode = this.nodes.get(this.protagonist.currentNode);
+                        const t = this.easeInOutQuad(this.protagonist.progress);
+                        this.protagonist.x = currentNode.x + (targetNode.x - currentNode.x) * t;
+                        this.protagonist.y = currentNode.y + (targetNode.y - currentNode.y) * t;
+                    }
+                }
+            }
+
+            easeInOutQuad(t) {
+                return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            }
+
+            updateEmotionalState() {
+                const visitedCount = Array.from(this.nodes.values()).filter(n => n.visited).length;
+                const totalNodes = this.nodes.size;
+                
+                // Clarity increases with exploration but plateaus
+                this.clarity = Math.min(0.8, visitedCount / totalNodes + 0.2);
+                
+                // Anxiety fluctuates based on number of unexplored connections
+                const unexploredConnections = Array.from(this.nodes.values())
+                    .filter(n => !n.visited)
+                    .reduce((sum, n) => sum + n.connections.size, 0);
+                
+                this.anxiety = Math.min(1, unexploredConnections / (totalNodes * 2));
+                
+                // Infinity sense grows with graph complexity
+                this.infinity = Math.min(1, totalNodes / 50);
+            }
+
+            updateHairStrands() {
+                this.hairStrands.forEach((strand, index) => {
+                    // Clear old points
+                    strand.points = [];
+                    
+                    // Hair connects protagonist to nearby nodes
+                    const nearbyNodes = Array.from(this.nodes.values())
+                        .filter(node => {
+                            const distance = Math.hypot(node.x - this.protagonist.x, node.y - this.protagonist.y);
+                            return distance < 200 + Math.sin(this.time * 0.02 + index) * 50;
+                        })
+                        .sort((a, b) => {
+                            const distA = Math.hypot(a.x - this.protagonist.x, a.y - this.protagonist.y);
+                            const distB = Math.hypot(b.x - this.protagonist.x, b.y - this.protagonist.y);
+                            return distA - distB;
+                        });
+
+                    if (nearbyNodes.length > index) {
+                        const targetNode = nearbyNodes[index % nearbyNodes.length];
+                        strand.targetNodeId = targetNode.id;
+                        
+                        // Create flowing curve from protagonist to node
+                        const segments = 12;
+                        for (let i = 0; i <= segments; i++) {
+                            const t = i / segments;
+                            const baseX = this.protagonist.x + (targetNode.x - this.protagonist.x) * t;
+                            const baseY = this.protagonist.y + (targetNode.y - this.protagonist.y) * t;
+                            
+                            // Add organic movement
+                            const offset = Math.sin(this.time * 0.03 + index + t * Math.PI) * 20;
+                            const perpX = -(targetNode.y - this.protagonist.y) / Math.hypot(targetNode.x - this.protagonist.x, targetNode.y - this.protagonist.y);
+                            const perpY = (targetNode.x - this.protagonist.x) / Math.hypot(targetNode.x - this.protagonist.x, targetNode.y - this.protagonist.y);
+                            
+                            strand.points.push({
+                                x: baseX + perpX * offset,
+                                y: baseY + perpY * offset
+                            });
+                        }
+                    }
+                });
+            }
+
+            drawLandscapeGeometry() {
+                this.ctx.save();
+                
+                // Generate procedural background patterns
+                this.ctx.globalAlpha = 0.1;
+                this.ctx.strokeStyle = '#4a4a6a';
+                this.ctx.lineWidth = 1;
+                
+                // Create geometric landscape based on graph nodes
+                for (const [id, node] of this.nodes) {
+                    const size = 50 + node.energy * 100;
+                    const sides = 3 + Math.floor(node.probability * 5);
+                    
+                    this.ctx.beginPath();
+                    for (let i = 0; i <= sides; i++) {
+                        const angle = (i / sides) * Math.PI * 2 + node.phase + this.time * 0.01;
+                        const x = node.x + Math.cos(angle) * size;
+                        const y = node.y + Math.sin(angle) * size;
+                        
+                        if (i === 0) {
+                            this.ctx.moveTo(x, y);
+                        } else {
+                            this.ctx.lineTo(x, y);
+                        }
+                    }
+                    this.ctx.stroke();
+                }
+                
+                this.ctx.restore();
+            }
+
+            drawGraph() {
+                // Draw edges
+                this.ctx.strokeStyle = 'rgba(100, 150, 200, 0.3)';
+                this.ctx.lineWidth = 1;
+                
+                for (const edge of this.edges) {
+                    const [nodeAId, nodeBId] = edge.split('-').map(Number);
+                    const nodeA = this.nodes.get(nodeAId);
+                    const nodeB = this.nodes.get(nodeBId);
+                    
+                    if (nodeA && nodeB) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(nodeA.x, nodeA.y);
+                        this.ctx.lineTo(nodeB.x, nodeB.y);
+                        this.ctx.stroke();
+                    }
+                }
+
+                // Draw nodes
+                for (const [id, node] of this.nodes) {
+                    const pulse = 1 + Math.sin(this.time * 0.05 + node.phase) * 0.3;
+                    
+                    this.ctx.fillStyle = node.visited 
+                        ? `hsla(200, 70%, 60%, ${0.7 * pulse})`
+                        : `hsla(300, 60%, 50%, ${0.5 * pulse})`;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(node.x, node.y, node.radius * pulse, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Special rendering for possibility nodes
+                    if (node.type === 'possibility') {
+                        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.stroke();
+                    }
+                }
+            }
+
+            drawProtagonist() {
+                this.ctx.save();
+                
+                // Draw protagonist as ethereal figure
+                const glowRadius = 15 + Math.sin(this.time * 0.1) * 5;
+                
+                // Glow effect
+                const gradient = this.ctx.createRadialGradient(
+                    this.protagonist.x, this.protagonist.y, 0,
+                    this.protagonist.x, this.protagonist.y, glowRadius
+                );
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+                gradient.addColorStop(0.7, 'rgba(200, 200, 255, 0.3)');
+                gradient.addColorStop(1, 'rgba(100, 100, 200, 0)');
+                
+                this.ctx.fillStyle = gradient;
+                this.ctx.beginPath();
+                this.ctx.arc(this.protagonist.x, this.protagonist.y, glowRadius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Core figure
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                this.ctx.beginPath();
+                this.ctx.arc(this.protagonist.x, this.protagonist.y, 4, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                this.ctx.restore();
+            }
+
+            drawHairStrands() {
+                this.hairStrands.forEach((strand) => {
+                    if (strand.points.length < 2) return;
+                    
+                    this.ctx.strokeStyle = strand.color;
+                    this.ctx.lineWidth = strand.thickness;
+                    this.ctx.lineCap = 'round';
+                    
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(strand.points[0].x, strand.points[0].y);
+                    
+                    for (let i = 1; i < strand.points.length; i++) {
+                        this.ctx.lineTo(strand.points[i].x, strand.points[i].y);
+                    }
+                    
+                    this.ctx.stroke();
+                    
+                    // Add sparkle effects at connection points
+                    if (strand.targetNodeId !== null) {
+                        const targetNode = this.nodes.get(strand.targetNodeId);
+                        if (targetNode) {
+                            const sparkle = Math.sin(this.time * 0.1 + strand.energy * 10) * 0.5 + 0.5;
+                            this.ctx.fillStyle = `rgba(255, 255, 255, ${sparkle})`;
+                            this.ctx.beginPath();
+                            this.ctx.arc(targetNode.x, targetNode.y, 2, 0, Math.PI * 2);
+                            this.ctx.fill();
+                        }
+                    }
+                });
+            }
+
+            updateUI() {
+                document.getElementById('nodeCount').textContent = this.nodes.size;
+                document.getElementById('edgeCount').textContent = this.edges.size;
+                document.getElementById('depth').textContent = Array.from(this.nodes.values()).filter(n => n.visited).length;
+                
+                // Update emotion indicators
+                document.getElementById('anxiety').textContent = '█'.repeat(Math.floor(this.anxiety * 5)) + '░'.repeat(5 - Math.floor(this.anxiety * 5));
+                document.getElementById('clarity').textContent = '█'.repeat(Math.floor(this.clarity * 5)) + '░'.repeat(5 - Math.floor(this.clarity * 5));
+                document.getElementById('infinity').textContent = '█'.repeat(Math.floor(this.infinity * 5)) + '░'.repeat(5 - Math.floor(this.infinity * 5));
+            }
+
+            animate() {
+                this.time++;
+                
+                // Clear canvas with fade effect
+                this.ctx.fillStyle = 'rgba(10, 10, 21, 0.05)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Update systems
+                this.updateProtagonist();
+                this.updateHairStrands();
+                
+                // Render layers
+                this.drawLandscapeGeometry();
+                this.drawGraph();
+                this.drawHairStrands();
+                this.drawProtagonist();
+                
+                // Update UI
+                this.updateUI();
+                
+                // Continue animation
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Initialize the experience
+        window.addEventListener('DOMContentLoaded', () => {
+            new SurrealisticJourney();
+        });
+    </script>
+</body>
+</html>
