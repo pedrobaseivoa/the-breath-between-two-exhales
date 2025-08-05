@@ -48,10 +48,9 @@ It is the study of the softest path to infinity.
 2. Threshold Mathematics: Soft Divergence and Emergence
 2.1 The Nature of Soft Divergence
 The idea of divergence is often associated with explosion — an uncontrolled increase, a force exceeding bounds. But some infinities defy this image. They are quiet, incremental, and structurally coherent.
-
 We introduce the Threshold Series: divergent sequences whose terms diminish individually, yet whose sum escapes collectively. They reveal that infinitesimal contributions can accumulate into emergence, even when no single step appears significant.
-
 These series are not merely mathematical curiosities. They are conceptual bridges — between stillness and motion, silence and becoming.
+
 2.2 Formal Definition
 A Threshold Series is defined as a sequence of positive, diminishing terms aₙ, such that:
 lim(n→∞) aₙ = 0, but ∑(n=1)^∞ aₙ = ∞
