@@ -100,7 +100,6 @@ f(M) = exp(-λM^ρ)
   - **ρ = 1**: Linear resistance modulation (standard exponential dampening)
   - **ρ < 1**: "Forgiving" memory (diminishing modulation with accumulation)
   - **ρ > 1**: "Traumatic" memory (intensifying modulation with accumulation)
-  - **ρ ≈ 2.8-2.9**: Optimal breathing memory (connected to Pedro's breathing frequency discovery)
 
 **Universal Mathematical Properties:**
 - **Initial condition**: f(0) = 1 (no historical modulation at start)
